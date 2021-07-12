@@ -1,11 +1,11 @@
 import {
   ServiceProvider,
-  TransmissionQueueItem,
+  QueueItem,
   TransmissionRequest,
   TransmissionResponse,
   TransmissionResponseQueueItem,
   TransmissionSessionStatistics,
-} from '../types';
+} from '../pages/api/status/types';
 import axios, { AxiosError } from 'axios';
 
 const statusValues: { [key: number]: string } = {
@@ -18,11 +18,15 @@ const statusValues: { [key: number]: string } = {
   6: 'Seeding',
 };
 
-export class TransmissionProvider implements ServiceProvider {
+type TransmissionProps = {
+  host: string;
+};
+
+export class Transmission implements ServiceProvider {
   host;
   csrfToken: string = '';
 
-  constructor(host: string) {
+  constructor({ host }: TransmissionProps) {
     this.host = host;
   }
 
@@ -71,16 +75,17 @@ export class TransmissionProvider implements ServiceProvider {
     return status?.downloadSpeed.toString() || 'Unknown';
   }
 
-  async getQueue(): Promise<Array<TransmissionQueueItem>> {
+  async getQueue(): Promise<Array<QueueItem>> {
     const queue = await this.call<TransmissionResponseQueueItem>(
       'torrent-get',
       {
         fields: ['name', 'status'],
       },
     );
+
     return (
       queue?.torrents.map(
-        (torrent): TransmissionQueueItem => ({
+        (torrent): QueueItem => ({
           ...torrent,
           status: statusValues[torrent.status],
         }),

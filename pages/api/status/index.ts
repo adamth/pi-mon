@@ -1,21 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { NZBGetProvider } from './providers/NZBGetProvider';
-import { NZBGetQueueItem, TransmissionQueueItem } from './types';
-import { TransmissionProvider } from './providers/TransmissionProvider';
+import { QueueItem, ServiceProvider } from './types';
+import * as Providers from '../../../providers';
+import { loadConfig } from '../loadConfig';
 
-const nzbGetProvider = new NZBGetProvider(
-  process.env.NZBGET_HOST || '',
-  process.env.NZBGET_USER || '',
-  process.env.NZBGET_PASSWORD || '',
-);
-
-const transmissionProvider = new TransmissionProvider(
-  process.env.TRANSMISSION_HOST || '',
-);
-
-type Data = {
-  queue: Array<NZBGetQueueItem | TransmissionQueueItem>;
+type DataItem = {
+  name: string;
+  queue: Array<QueueItem>;
   downloadSpeed: string;
+};
+type Data = Array<DataItem>;
+
+const fetchProviderData = async (
+  provider: ServiceProvider,
+): Promise<DataItem> => {
+  const queue = await provider.getQueue();
+  const downloadSpeed = await provider.getDownloadSpeed();
+
+  return {
+    name: provider.constructor.name,
+    queue,
+    downloadSpeed,
+  };
 };
 
 export default async function handler(
@@ -23,9 +28,15 @@ export default async function handler(
   res: NextApiResponse<Data>,
 ) {
   try {
-    const queue = await transmissionProvider.getQueue();
-    const downloadSpeed = await transmissionProvider.getDownloadSpeed();
-    res.status(200).json({ queue, downloadSpeed });
+    const config = await loadConfig();
+    const allProviders = config.providers.map((providerConfig) => {
+      return new Providers[providerConfig.type]({
+        ...providerConfig.params,
+      });
+    });
+    const data = await Promise.all(allProviders.map(fetchProviderData));
+
+    res.status(200).json(data);
   } catch (e) {
     console.error('Error fetching status', e);
     res.status(500);

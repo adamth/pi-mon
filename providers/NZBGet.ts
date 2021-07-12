@@ -1,17 +1,23 @@
 import {
   NZBGetRequest,
-  NZBGetQueueItem,
+  QueueItem,
   NZBResponseQueueItem,
   ServiceProvider,
-} from '../types';
+} from '../pages/api/status/types';
 import axios from 'axios';
 
-export class NZBGetProvider implements ServiceProvider {
+type NZBGetProps = {
+  host: string;
+  username: string;
+  password: string;
+};
+
+export class NZBGet implements ServiceProvider {
   host;
   username;
   password;
 
-  constructor(host: string, username: string, password: string) {
+  constructor({ host, username, password }: NZBGetProps) {
     this.host = host;
     this.username = username;
     this.password = password;
@@ -36,14 +42,13 @@ export class NZBGetProvider implements ServiceProvider {
 
   async getDownloadSpeed(): Promise<string> {
     const status = await this.call('status');
-    return status['DownloadRate'];
+    return status['DownloadRate'].toString();
   }
 
-  async getQueue(): Promise<Array<NZBGetQueueItem>> {
+  async getQueue(): Promise<Array<QueueItem>> {
     const queue = await this.call('listgroups');
     return queue.map((item: NZBResponseQueueItem) => ({
       name: item['NZBName'],
-      niceName: item['NZBNicename'],
       status: item['Status'],
     }));
   }

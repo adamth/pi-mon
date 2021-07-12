@@ -1,11 +1,10 @@
 export interface ServiceProvider {
   getDownloadSpeed: () => Promise<string>;
-  getQueue: () => Promise<Array<any>>;
+  getQueue: () => Promise<Array<QueueItem>>;
 }
 
-export type NZBGetQueueItem = {
+export type QueueItem = {
   name: string;
-  niceName: string;
   status: string;
 };
 
@@ -43,11 +42,6 @@ export type TransmissionResponseQueueItem = {
     name: string;
     status: number;
   }>;
-};
-
-export type TransmissionQueueItem = {
-  name: string;
-  status: string;
 };
 
 export type NZBResponseQueueItem = {
