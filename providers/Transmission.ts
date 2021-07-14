@@ -26,6 +26,8 @@ export class Transmission implements ServiceProvider {
   host;
   csrfToken: string = '';
 
+  static params = ['host'];
+
   constructor({ host }: TransmissionProps) {
     this.host = host;
   }

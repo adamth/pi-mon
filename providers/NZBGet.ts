@@ -17,6 +17,8 @@ export class NZBGet implements ServiceProvider {
   username;
   password;
 
+  public static params = ['host', 'username', 'password'];
+
   constructor({ host, username, password }: NZBGetProps) {
     this.host = host;
     this.username = username;
