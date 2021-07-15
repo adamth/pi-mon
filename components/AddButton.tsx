@@ -1,37 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import Image from 'next/image';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {
-  FormControl,
-  InputLabel,
-  makeStyles,
-  MenuItem,
-  Select,
-  TextField,
-} from '@material-ui/core';
-import * as Providers from '../providers';
-import { useFormik } from 'formik';
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
+import * as Providers from '../providers';
+
+import { ProviderForm } from './ProviderForm';
+import { CardContent, DialogContent } from '@material-ui/core';
 
 export const AddButton = () => {
   const [open, setOpen] = React.useState(false);
-  const [params, setParams] = useState<Array<
-    'host' | 'username' | 'password'
-  > | null>(null);
-  const classes = useStyles();
+  const [fields, setFields] = useState<Array<string> | null>(null);
+  const [provider, setProvider] = useState<string | null>(null);
+  const [defaultValues, setDefaultValues] = useState<any>({});
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -41,29 +25,29 @@ export const AddButton = () => {
     setOpen(false);
   };
 
-  const formik = useFormik({
-    initialValues: {
-      provider: '',
-      host: '',
-      username: '',
-      password: '',
-    },
-    onSubmit: async (values) => {
-      const response = await fetch('/api/provider/create', {
-        method: 'POST',
-        body: JSON.stringify(formik.values),
-      });
-      console.log(response);
-      alert(JSON.stringify(values, null, 2));
-    },
-  });
+  const handleSubmit = async (values: any) => {
+    const response = await fetch('/api/provider/create', {
+      method: 'POST',
+      body: JSON.stringify(values),
+    });
+  };
 
   useEffect(() => {
-    if (formik.values.provider) {
+    if (provider) {
       // @ts-ignore
-      setParams(Providers[formik.values.provider].params);
+      setFields(Providers[provider].params);
     }
-  }, [formik.values.provider]);
+  }, [provider]);
+
+  useEffect(() => {
+    setDefaultValues(
+      fields?.reduce((acc, field) => {
+        // @ts-ignore
+        acc[field] = '';
+        return acc;
+      }, {}),
+    );
+  }, [fields]);
 
   // @ts-ignore
   return (
@@ -75,54 +59,51 @@ export const AddButton = () => {
         open={open}
         onClose={handleClose}
         aria-labelledby='form-dialog-title'
+        fullWidth
       >
         <DialogTitle id='form-dialog-title'>Add provider</DialogTitle>
-        <form onSubmit={formik.handleSubmit}>
-          <DialogContent>
-            <DialogContentText>
-              To add a new provider, please provide details below.
-            </DialogContentText>
-            <FormControl className={classes.formControl} fullWidth>
-              <InputLabel id='provider'>Provider</InputLabel>
-              <Select
-                labelId='provider'
-                id='provider'
-                name='provider'
-                value={formik.values.provider}
-                onChange={formik.handleChange}
-              >
-                {Object.keys(Providers).map((providerName, i) => (
-                  <MenuItem key={i} value={providerName}>
-                    {providerName}
-                  </MenuItem>
-                ))}
-              </Select>
-              {params &&
-                params.map((param, i) => (
-                  <TextField
-                    key={i}
-                    autoFocus
-                    margin='dense'
-                    id={param}
-                    label={param}
-                    type='text'
-                    fullWidth
-                    value={formik.values[param]}
-                    onChange={formik.handleChange}
-                  />
-                ))}
-              )
-            </FormControl>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color='primary'>
-              Cancel
-            </Button>
-            <Button type='submit' color='primary'>
-              Add
-            </Button>
-          </DialogActions>
-        </form>
+        <DialogContent>
+          <Grid container spacing={3}>
+            {Object.keys(Providers).map((providerName, i) => (
+              <Grid xs={6} key={i} item>
+                <Box
+                  boxShadow={provider === providerName ? 2 : 0}
+                  onClick={() => setProvider(providerName)}
+                  style={{
+                    cursor: 'pointer',
+                    border: '1px solid',
+                    borderRadius: '6px',
+                    borderColor:
+                      provider === providerName ? 'green' : '#e2e2e2',
+                  }}
+                >
+                  <Box
+                    display='flex'
+                    flexDirection='row'
+                    alignItems='center'
+                    padding='10px'
+                  >
+                    <Image
+                      alt='provider name'
+                      src={(Providers as any)[providerName].logo}
+                      width='64px'
+                      height='64px'
+                    />
+                    <CardContent>{providerName}</CardContent>
+                  </Box>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+        {fields && (
+          <ProviderForm
+            initialValues={defaultValues}
+            fields={fields}
+            handleSubmit={handleSubmit}
+            handleClose={handleClose}
+          />
+        )}
       </Dialog>
     </React.Fragment>
   );
