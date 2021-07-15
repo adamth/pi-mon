@@ -25,5 +25,5 @@ Add config for each provider to monitor
 ### Docker
 Starts project on port 5000
 ```bash
-docker build -t client . && docker run --name CLIENT_CONTAINER -p 0.0.0.0:5000:3000 client
+docker build -t client . && docker run --name pi-mon -p 0.0.0.0:5000:3000 client
 ```
