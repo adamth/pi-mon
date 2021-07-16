@@ -62,7 +62,7 @@ export const ProviderForm = ({
             Cancel
           </Button>
           <Button type='submit' color='primary'>
-            Add
+            Save
           </Button>
         </DialogActions>
       </Form>

@@ -9,21 +9,25 @@ import Dialog from '@material-ui/core/Dialog';
 
 import { ProviderForm } from './ProviderForm';
 import * as serviceProviders from '../providers';
-import { ServiceProvider } from '../pages/api/status/types';
 
 type AddServiceProviderModalProps = {
   visible: boolean;
+  label: string;
   handleClose: () => void;
+  initialValues?: any;
+  selectedServiceProviderName?: string;
 };
 
-export const AddServiceProviderModal = ({
+export const ServiceProviderModal = ({
   visible,
+  label,
   handleClose,
+  initialValues,
+  selectedServiceProviderName,
 }: AddServiceProviderModalProps) => {
-  const [serviceProviderName, setServiceProviderName] = useState<string | null>(
-    null,
-  );
-  const [defaultValues, setDefaultValues] = useState<any>({});
+  const [serviceProviderName, setServiceProviderName] = useState<
+    string | undefined
+  >(selectedServiceProviderName);
 
   const handleSubmit = async (values: any) => {
     const response = await fetch('/api/provider/create', {
@@ -32,21 +36,6 @@ export const AddServiceProviderModal = ({
     });
   };
 
-  useEffect(() => {
-    if (!!serviceProviderName) {
-      const serviceProvider = (serviceProviders as any)[
-        serviceProviderName
-      ] as typeof ServiceProvider;
-      setDefaultValues(
-        serviceProvider.fields.reduce((acc, field) => {
-          // @ts-ignore
-          acc[field] = '';
-          return acc;
-        }, {}),
-      );
-    }
-  }, [serviceProviderName]);
-
   return (
     <Dialog
       open={visible}
@@ -54,7 +43,7 @@ export const AddServiceProviderModal = ({
       aria-labelledby='form-dialog-title'
       fullWidth
     >
-      <DialogTitle id='form-dialog-title'>Add provider</DialogTitle>
+      <DialogTitle id='form-dialog-title'>{label} provider</DialogTitle>
       <DialogContent style={{ overflow: 'hidden' }}>
         <Grid container spacing={3}>
           {Object.keys(serviceProviders).map((serviceName, i) => (
@@ -91,7 +80,7 @@ export const AddServiceProviderModal = ({
       </DialogContent>
       {serviceProviderName && (
         <ProviderForm
-          initialValues={defaultValues}
+          initialValues={initialValues}
           fields={(serviceProviders as any)[serviceProviderName].fields}
           handleSubmit={handleSubmit}
           handleClose={handleClose}

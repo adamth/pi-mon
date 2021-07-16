@@ -1,14 +1,14 @@
 import path from 'path';
 import { promises as fs } from 'fs';
 
-type Provider = {
+export type ServiceProviderConfig = {
   type: 'Transmission' | 'NZBGet';
   enabled: boolean;
   params: any;
 };
 
-type Config = {
-  providers: Array<Provider>;
+export type Config = {
+  providers: Array<ServiceProviderConfig>;
 };
 
 export const loadConfig = async (): Promise<Config> => {

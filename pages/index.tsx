@@ -4,8 +4,9 @@ import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { ProviderRow } from '../components/ProviderRow';
-import { AddButton } from '../components/AddButton';
+import { EditButton } from '../components/EditButton';
 import { useMemo } from 'react';
+import { ServiceProvidersList } from './serviceProviders/views/List';
 
 export default function Home() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -30,19 +31,13 @@ export default function Home() {
 
       <main>
         <Container>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <h1>Pi-mon</h1>
-            </Grid>
-            <Grid item xs={12}>
-              <Box display='flex' justifyContent='flex-end'>
-                <AddButton />
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <ProviderRow name='Test' params={{ test: 'test' }} />
-            </Grid>
-          </Grid>
+          <Box>
+            <h1>Pi-mon</h1>
+          </Box>
+          <Box display='flex' justifyContent='flex-end' paddingBottom='20px'>
+            <EditButton label='Add' />
+          </Box>
+          <ServiceProvidersList />
         </Container>
       </main>
     </ThemeProvider>
