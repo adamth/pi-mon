@@ -22,7 +22,7 @@ type TransmissionProps = {
   host: string;
 };
 
-export class Transmission implements ServiceProvider {
+export class Transmission extends ServiceProvider {
   host;
   csrfToken: string = '';
 
@@ -30,6 +30,7 @@ export class Transmission implements ServiceProvider {
   public static logo = '/transmission-logo.png';
 
   constructor({ host }: TransmissionProps) {
+    super();
     this.host = host;
   }
 
@@ -95,4 +96,8 @@ export class Transmission implements ServiceProvider {
       ) || []
     );
   }
+
+  public static serviceName = 'Transmission';
+  public static fields = ['host'];
+  public static imageUrl = '/transmission-logo.png';
 }

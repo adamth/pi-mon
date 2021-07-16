@@ -12,15 +12,13 @@ type NZBGetProps = {
   password: string;
 };
 
-export class NZBGet implements ServiceProvider {
+export class NZBGet extends ServiceProvider {
   host;
   username;
   password;
 
-  public static params = ['host', 'username', 'password'];
-  public static logo = '/nzbget-logo.png';
-
   constructor({ host, username, password }: NZBGetProps) {
+    super();
     this.host = host;
     this.username = username;
     this.password = password;
@@ -55,4 +53,8 @@ export class NZBGet implements ServiceProvider {
       status: item['Status'],
     }));
   }
+
+  public static serviceName = 'NZBGet';
+  public static fields = ['host', 'username', 'password'];
+  public static imageUrl = '/nzbget-logo.png';
 }

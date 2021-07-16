@@ -1,6 +1,9 @@
-export interface ServiceProvider {
-  getDownloadSpeed: () => Promise<string>;
-  getQueue: () => Promise<Array<QueueItem>>;
+export abstract class ServiceProvider {
+  abstract getDownloadSpeed(): Promise<string>;
+  abstract getQueue(): Promise<Array<QueueItem>>;
+  public static serviceName: string;
+  public static fields: Array<string>;
+  public static imageUrl: string;
 }
 
 export type QueueItem = {
