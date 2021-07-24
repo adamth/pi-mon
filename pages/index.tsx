@@ -3,10 +3,9 @@ import { Box, Container, Grid } from '@material-ui/core';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { ProviderRow } from '../components/ProviderRow';
 import { EditButton } from '../components/EditButton';
 import { useMemo } from 'react';
-import { ServiceProvidersList } from './serviceProviders/views/List';
+import { ServiceProvidersList } from '../components/serviceProviders/views/List';
 
 export default function Home() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');

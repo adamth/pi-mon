@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ProviderRow } from '../../../components/ProviderRow';
+import { ProviderRow } from '../../ProviderRow';
 import { Grid } from '@material-ui/core';
-import { Config } from '../../api/loadConfig';
+import { Config } from '../../../pages/api/loadConfig';
 
 type ServiceProvidersListProps = {};
 

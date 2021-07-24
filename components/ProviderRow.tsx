@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Box, Button, Card, CardContent, Grid } from '@material-ui/core';
+import { Box, Card, CardContent, Grid } from '@material-ui/core';
 import { ServiceProviderConfig } from '../pages/api/loadConfig';
 import * as serviceProviders from '../providers';
 import { EditButton } from './EditButton';

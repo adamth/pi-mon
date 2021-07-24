@@ -30,9 +30,14 @@ export const ServiceProviderModal = ({
   >(selectedServiceProviderName);
 
   const handleSubmit = async (values: any) => {
-    const response = await fetch('/api/provider/create', {
+    const postBody = {
+      type: serviceProviderName,
+      enabled: true,
+      params: values,
+    };
+    await fetch('/api/provider/create', {
       method: 'POST',
-      body: JSON.stringify(values),
+      body: JSON.stringify(postBody),
     });
   };
 
