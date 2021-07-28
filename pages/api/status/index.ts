@@ -1,23 +1,23 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { QueueItem, ServiceProvider } from './types';
 import * as Providers from '../../../providers';
-import { configManager } from '../loadConfig';
+import { configManager, ServiceProviderType } from '../loadConfig';
 
-type DataItem = {
-  name: string;
+export type ServiceProviderStatus = {
+  type: ServiceProviderType;
   queue: Array<QueueItem>;
-  downloadSpeed: string;
+  downloadSpeed: number;
 };
-type Data = Array<DataItem>;
+export type StatusData = Array<ServiceProviderStatus>;
 
 const fetchProviderData = async (
   provider: ServiceProvider,
-): Promise<DataItem> => {
+): Promise<ServiceProviderStatus> => {
   const queue = await provider.getQueue();
   const downloadSpeed = await provider.getDownloadSpeed();
 
   return {
-    name: provider.constructor.name,
+    type: provider.constructor.name as ServiceProviderType,
     queue,
     downloadSpeed,
   };
@@ -25,7 +25,7 @@ const fetchProviderData = async (
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>,
+  res: NextApiResponse<StatusData>,
 ) {
   try {
     const config = await configManager.load();

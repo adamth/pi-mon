@@ -17,6 +17,7 @@ export const ServiceProvidersList = (props: ServiceProvidersListProps) => {
     const config = (await response.json()) as unknown as Config;
     setConfig(config);
   };
+
   useEffect(() => {
     fetchConfig();
   }, []);

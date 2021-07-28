@@ -32,12 +32,12 @@ export const ProviderRow = ({ serviceProviderConfig }: ProviderRowProps) => {
           <Grid item xs={2}>
             {serviceProviderConfig.enabled ? 'Enabled' : 'Disabled'}
           </Grid>
-          <Grid item xs={5} justifyContent='flex-end'>
+          <Grid item xs={5}>
             <Box display='flex' justifyContent='flex-end'>
               <EditButton
                 label='Edit'
                 initialValues={serviceProviderConfig.params}
-                selectedServiceProviderName={serviceProviderConfig.type}
+                selectedServiceProviderType={serviceProviderConfig.type}
               />
             </Box>
           </Grid>

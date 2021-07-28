@@ -1,8 +1,10 @@
 import path from 'path';
 import { promises as fs } from 'fs';
 
+export type ServiceProviderType = 'Transmission' | 'NZBGet';
+
 export type ServiceProviderConfig = {
-  type: 'Transmission' | 'NZBGet';
+  type: ServiceProviderType;
   enabled: boolean;
   params: any;
 };
@@ -19,7 +21,10 @@ const getConfigPath = () => {
 const loadConfig = async (): Promise<Config> => {
   const filePath = getConfigPath();
   const raw = await fs.readFile(filePath);
-  return JSON.parse(raw.toString()) as unknown as Config;
+  if (raw.toString()) {
+    return JSON.parse(raw.toString()) as unknown as Config;
+  }
+  return { providers: [] } as Config;
 };
 
 const saveProvider = async (
@@ -30,8 +35,10 @@ const saveProvider = async (
     return provider.type === providerConfig.type;
   });
 
-  if (existingIndex) {
+  if (existingIndex !== -1) {
     currentConfig.providers[existingIndex] = providerConfig;
+  } else {
+    currentConfig.providers.push(providerConfig);
   }
   const filePath = getConfigPath();
   await fs.writeFile(filePath, JSON.stringify(currentConfig));

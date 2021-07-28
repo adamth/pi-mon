@@ -10,6 +10,9 @@ WORKDIR /usr/src
 # copy source files
 COPY . /usr/src
 
+# create config file
+RUN touch config.json
+
 # install dependencies
 RUN npm install
 

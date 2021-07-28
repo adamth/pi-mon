@@ -2,18 +2,21 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 
 import { ServiceProviderModal } from './ServiceProviderModal';
-import { ServiceProviderConfig } from '../pages/api/loadConfig';
+import {
+  ServiceProviderConfig,
+  ServiceProviderType,
+} from '../pages/api/loadConfig';
 
 type EditButtonProps = {
   label: string;
   serviceProviderConfig?: ServiceProviderConfig;
   initialValues?: any;
-  selectedServiceProviderName?: string;
+  selectedServiceProviderType?: ServiceProviderType;
 };
 
 export const EditButton = ({
   label,
-  selectedServiceProviderName,
+  selectedServiceProviderType,
   initialValues = {},
 }: EditButtonProps) => {
   const [open, setOpen] = React.useState(false);
@@ -40,7 +43,7 @@ export const EditButton = ({
         initialValues={initialValues}
         visible={open}
         handleClose={handleClose}
-        selectedServiceProviderName={selectedServiceProviderName}
+        selectedServiceProviderType={selectedServiceProviderType}
       />
     </React.Fragment>
   );

@@ -1,6 +1,12 @@
+export type TestResult = {
+  pass: boolean;
+  message?: string;
+};
+
 export abstract class ServiceProvider {
-  abstract getDownloadSpeed(): Promise<string>;
+  abstract getDownloadSpeed(): Promise<number>;
   abstract getQueue(): Promise<Array<QueueItem>>;
+  abstract test(): Promise<TestResult>;
   public static serviceName: string;
   public static fields: Array<string>;
   public static imageUrl: string;

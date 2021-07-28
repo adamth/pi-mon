@@ -3,6 +3,7 @@ import {
   QueueItem,
   NZBResponseQueueItem,
   ServiceProvider,
+  TestResult,
 } from '../pages/api/status/types';
 import axios from 'axios';
 
@@ -41,9 +42,9 @@ export class NZBGet extends ServiceProvider {
     return response.data['result'];
   };
 
-  async getDownloadSpeed(): Promise<string> {
+  async getDownloadSpeed(): Promise<number> {
     const status = await this.call('status');
-    return status['DownloadRate'].toString();
+    return status['DownloadRate'];
   }
 
   async getQueue(): Promise<Array<QueueItem>> {
@@ -57,4 +58,16 @@ export class NZBGet extends ServiceProvider {
   public static serviceName = 'NZBGet';
   public static fields = ['host', 'username', 'password'];
   public static imageUrl = '/nzbget-logo.png';
+
+  async test(): Promise<TestResult> {
+    try {
+      await this.getDownloadSpeed();
+      return { pass: true };
+    } catch (e) {
+      if (e.code === 'ECONNREFUSED') {
+        return { pass: false, message: 'Could not connect to host' };
+      }
+      return { pass: false, message: e.message };
+    }
+  }
 }

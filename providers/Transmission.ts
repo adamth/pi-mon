@@ -5,6 +5,7 @@ import {
   TransmissionResponse,
   TransmissionResponseQueueItem,
   TransmissionSessionStatistics,
+  TestResult,
 } from '../pages/api/status/types';
 import axios, { AxiosError } from 'axios';
 
@@ -67,16 +68,18 @@ export class Transmission extends ServiceProvider {
             'X-Transmission-Session-Id': this.csrfToken,
           },
         });
+      } else {
+        throw e;
       }
     }
     return response?.data.arguments || null;
   };
 
-  async getDownloadSpeed(): Promise<string> {
+  async getDownloadSpeed(): Promise<number> {
     const status = await this.call<TransmissionSessionStatistics>(
       'session-stats',
     );
-    return status?.downloadSpeed.toString() || 'Unknown';
+    return status?.downloadSpeed || 0;
   }
 
   async getQueue(): Promise<Array<QueueItem>> {
@@ -100,4 +103,16 @@ export class Transmission extends ServiceProvider {
   public static serviceName = 'Transmission';
   public static fields = ['host'];
   public static imageUrl = '/transmission-logo.png';
+
+  async test(): Promise<TestResult> {
+    try {
+      await this.getDownloadSpeed();
+      return { pass: true };
+    } catch (e) {
+      if (['ENOTFOUND', 'ECONNREFUSED'].includes(e.code)) {
+        return { pass: false, message: 'Could not connect to host' };
+      }
+      return { pass: false, message: e.message };
+    }
+  }
 }

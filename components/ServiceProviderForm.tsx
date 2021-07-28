@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Field, Formik } from 'formik';
-import { DialogActions, DialogContent, TextField } from '@material-ui/core';
+import {
+  CircularProgress,
+  DialogActions,
+  DialogContent,
+  TextField,
+} from '@material-ui/core';
 import Button from '@material-ui/core/Button';
+import { TestButton, TestResult } from './TestButton';
+import { ServiceProviderType } from '../pages/api/loadConfig';
 
-type ProviderFormProps = {
+type ServiceProviderFormProps = {
   fields: Array<string>;
   initialValues: any;
   handleSubmit: (values: any) => Promise<void>;
   handleClose: () => void;
+  serviceProviderType?: ServiceProviderType;
+  saving?: boolean;
 };
 
 const Input = ({ field, form, ...rest }: { field: any; form: any }) => {
@@ -38,12 +47,20 @@ const validate = (values: any) => {
   return errors;
 };
 
-export const ProviderForm = ({
+export const ServiceProviderForm = ({
   fields,
   initialValues,
   handleSubmit,
   handleClose,
-}: ProviderFormProps) => {
+  serviceProviderType,
+  saving = false,
+}: ServiceProviderFormProps) => {
+  const [testPassed, setTestPassed] = useState<boolean>(false);
+
+  const handleTestResult = (result: TestResult) => {
+    setTestPassed(result.pass);
+  };
+
   return (
     <Formik
       enableReinitialize
@@ -58,11 +75,22 @@ export const ProviderForm = ({
           ))}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color='primary'>
+          {serviceProviderType && (
+            <TestButton
+              type={serviceProviderType}
+              style={{ flex: '1 0 0' }}
+              onTestResult={handleTestResult}
+            />
+          )}
+          <Button onClick={handleClose} variant='outlined'>
             Cancel
           </Button>
-          <Button type='submit' color='primary'>
-            Save
+          <Button
+            type='submit'
+            variant='outlined'
+            disabled={!testPassed || saving}
+          >
+            {saving ? <CircularProgress size='22px' /> : 'Save'}
           </Button>
         </DialogActions>
       </Form>
