@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { QueueItem, ServiceProvider } from './types';
-import * as Providers from '../../../providers';
-import { configManager, ServiceProviderType } from '../loadConfig';
+import { ServiceProviderType } from '../loadConfig';
+import { getAllProviders } from '../../../utils/getAllProviders';
 
 export type ServiceProviderStatus = {
   type: ServiceProviderType;
@@ -28,13 +28,7 @@ export default async function handler(
   res: NextApiResponse<StatusData>,
 ) {
   try {
-    const config = await configManager.load();
-    const allProviders = config.providers.map((providerConfig) => {
-      return new Providers[providerConfig.type]({
-        ...providerConfig.params,
-      });
-    });
-
+    const allProviders = await getAllProviders();
     const data = await Promise.all(allProviders.map(fetchProviderData));
 
     res.status(200).json(data);

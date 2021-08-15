@@ -25,7 +25,10 @@ export class NZBGet extends ServiceProvider {
     this.password = password;
   }
 
-  private call = async (method: 'status' | 'listgroups', params?: any) => {
+  private call = async (
+    method: 'status' | 'listgroups' | 'pausedownload' | 'resumedownload',
+    params?: any,
+  ) => {
     const url = `http://${this.username}:${this.password}@${this.host}/jsonrpc`;
 
     const payload: NZBGetRequest = {
@@ -53,6 +56,20 @@ export class NZBGet extends ServiceProvider {
       name: item['NZBName'],
       status: item['Status'],
     }));
+  }
+
+  async pause(): Promise<void> {
+    console.log('got here!!');
+    try {
+      const result = await this.call('pausedownload');
+      console.log(result);
+    } catch (e) {
+      console.log('error!', e);
+    }
+  }
+
+  async resume(): Promise<void> {
+    await this.call('resumedownload');
   }
 
   public static serviceName = 'NZBGet';

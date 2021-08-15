@@ -6,6 +6,8 @@ export type TestResult = {
 export abstract class ServiceProvider {
   abstract getDownloadSpeed(): Promise<number>;
   abstract getQueue(): Promise<Array<QueueItem>>;
+  abstract pause(): Promise<void>;
+  abstract resume(): Promise<void>;
   abstract test(): Promise<TestResult>;
   public static serviceName: string;
   public static fields: Array<string>;

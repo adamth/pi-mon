@@ -40,7 +40,7 @@ export class Transmission extends ServiceProvider {
   }
 
   private call = async <T = any>(
-    method: 'session-stats' | 'torrent-get',
+    method: 'session-stats' | 'torrent-get' | 'torrent-stop' | 'torrent-start',
     params?: any,
   ): Promise<T | null> => {
     const url = `http://${this.host}/transmission/rpc`;
@@ -98,6 +98,14 @@ export class Transmission extends ServiceProvider {
         }),
       ) || []
     );
+  }
+
+  async pause(): Promise<void> {
+    await this.call('torrent-stop');
+  }
+
+  async resume(): Promise<void> {
+    await this.call('torrent-start');
   }
 
   public static serviceName = 'Transmission';

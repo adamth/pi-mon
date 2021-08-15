@@ -16,7 +16,7 @@ export const TotalDownloadSpeed = ({ status }: TotalDownloadSpeedProps) => {
   const convertedSpeed = bytesToSize(totalDownloadSpeed);
   return (
     <Box display='flex' flexDirection='column' alignItems='center'>
-      <Grid container spacing={1} alignItems='center'>
+      <Grid container spacing={1} alignItems='center' justifyContent='center'>
         <Grid item>
           <CloudDownloadIcon />
         </Grid>

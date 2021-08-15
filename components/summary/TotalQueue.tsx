@@ -13,7 +13,7 @@ export const TotalQueue = ({ status }: TotalQueueProps) => {
   }, 0);
   return (
     <Box display='flex' flexDirection='column' alignItems='center'>
-      <Grid container spacing={1}>
+      <Grid container spacing={1} justifyContent='center'>
         <Grid item>
           <ListIcon />
         </Grid>

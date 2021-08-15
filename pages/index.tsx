@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Layout } from '../components/Layout';
-import { ServiceProvidersList } from '../components/serviceProviders/views/List';
 import { StatusData } from './api/status';
 import { Box, CircularProgress, Grid } from '@material-ui/core';
 import { TotalQueue } from '../components/summary/TotalQueue';
 import { TotalDownloadSpeed } from '../components/summary/TotalDownloadSpeed';
 import { useInterval } from '../hooks/useInterval';
 import { QueueItemList } from '../components/summary/QueueItemList';
+import { DownloadControlButton } from '../components/DownloadControlButton';
 
 export default function Home() {
   const [status, setStatus] = useState<StatusData>();
@@ -41,12 +41,17 @@ export default function Home() {
         </Box>
       ) : status ? (
         <React.Fragment>
-          <Grid container spacing={3}>
-            <Grid item>
+          <Grid container spacing={3} alignContent='center' alignItems='center'>
+            <Grid item xs={3}>
               <TotalDownloadSpeed status={status} />
             </Grid>
-            <Grid item>
+            <Grid item xs={3}>
               <TotalQueue status={status} />
+            </Grid>
+            <Grid item xs={6}>
+              <div style={{ float: 'right' }}>
+                <DownloadControlButton />
+              </div>
             </Grid>
           </Grid>
           {status.map((serviceProviderStatus, i) => (
