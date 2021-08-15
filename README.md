@@ -27,3 +27,8 @@ Starts project on port 5000
 ```bash
 docker build -t commish/pi-monitor . && docker run --name pi-mon -p 0.0.0.0:5000:3000 client
 ```
+
+### Deploy to dockerhub
+```bash
+docker buildx build --push --platform linux/arm/v6 --tag commish/pi-monitor .
+```
